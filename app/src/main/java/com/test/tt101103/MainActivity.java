@@ -11,6 +11,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,17 +38,28 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         Log.d("NET", response);
 
-                        try {
-                            JSONArray array = new JSONArray(response);
-                            for (int i=0;i<array.length();i++)
-                            {
-                                JSONObject obj = array.getJSONObject(i);
 
-                                Map m = new HashMap();
-                                m.put("district", obj.getString("district"));
-                                m.put("address", obj.getString("address"));
-                                data.add(m);
-                            }
+//                            JSONArray array = new JSONArray(response);
+//                            for (int i=0;i<array.length();i++)
+//                            {
+//                                JSONObject obj = array.getJSONObject(i);
+//
+//                                Map m = new HashMap();
+//                                m.put("district", obj.getString("district"));
+//                                m.put("address", obj.getString("address"));
+//                                data.add(m);
+//                            }
+
+                        Gson gson = new GsonBuilder().create();
+                        Animal[] ani = gson.fromJson(response, Animal[].class);
+
+                        for (int i=0;i<ani.length;i++)
+                        {
+                            Map m = new HashMap();
+                            m.put("district", ani[i].district);
+                            m.put("address", ani[i].address);
+                            data.add(m);
+                        }
 
                             SimpleAdapter adapter = new SimpleAdapter(
                                         MainActivity.this,
@@ -57,9 +70,8 @@ public class MainActivity extends AppCompatActivity {
                             );
                             lv.setAdapter(adapter);
 
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+
+
 
 
                     }
